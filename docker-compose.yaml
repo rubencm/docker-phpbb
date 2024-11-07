@@ -1,0 +1,30 @@
+services:
+
+  phpbb:
+    container_name: phpbb
+    build:
+      context: .
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+        PHPBB_VERSION: ${PHPBB_VERSION}
+        PHPBB_REVISION: ${PHPBB_REVISION}
+    ports:
+      - 80:80
+    restart: unless-stopped
+    volumes:
+      - ./store:/var/www/html/store
+      - ./cache:/var/www/html/cache
+      - ./files:/var/www/html/files
+      - ./avatars:/var/www/html/images/avatars/upload
+      - ./ext:/var/www/html/ext
+  db:
+    container_name: db
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: 1
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+    volumes:
+      - ./dbdata:/var/lib/mysql
